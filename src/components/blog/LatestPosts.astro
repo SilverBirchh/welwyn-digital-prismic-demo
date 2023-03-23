@@ -1,26 +1,21 @@
 ---
 import Grid from '~/components/blog/Grid.astro';
-
-import { getBlogPermalink } from '~/utils/permalinks';
-import { findLatestPosts } from '~/utils/blog';
+import { getAllPosts } from '~/prismic';
 
 export interface Props {
   title?: string;
   allPostsText?: string;
   allPostsLink?: string | URL;
   information?: string;
-  postIds: string[];
 }
 
 const {
   title = await Astro.slots.render('title'),
-  allPostsText = 'View all posts',
-  allPostsLink = getBlogPermalink(),
   information = await Astro.slots.render('information'),
-  count = 4,
 } = Astro.props;
 
-const posts = await findLatestPosts({ count });
+const posts = await getAllPosts();
+
 ---
 
 <section class="px-4 py-16 mx-auto max-w-7xl lg:py-20">
@@ -32,16 +27,6 @@ const posts = await findLatestPosts({ count });
             class="text-3xl font-bold tracking-tight sm:text-4xl sm:leading-none group font-heading mb-2"
             set:html={title}
           />
-        )
-      }
-      {
-        allPostsText && allPostsLink && (
-          <a
-            class="text-muted dark:text-slate-400 hover:text-primary transition ease-in duration-200 block mb-6 lg:mb-0"
-            href={allPostsLink}
-          >
-            {allPostsText} »
-          </a>
         )
       }
     </div>

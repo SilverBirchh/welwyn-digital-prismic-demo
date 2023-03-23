@@ -1,38 +1,31 @@
 ---
-import { BLOG } from '~/config.mjs';
-
 import Layout from '~/layouts/PageLayout.astro';
 import SinglePost from '~/components/blog/SinglePost.astro';
-import ToBlogLink from '~/components/blog/ToBlogLink.astro';
 
-import { getCanonical, getPermalink } from '~/utils/permalinks';
-import { fetchPosts } from '~/utils/blog';
-import { findImage } from '~/utils/images';
+import { getAllPosts } from '~/prismic';
+import * as prismicH from '@prismicio/helpers'
 
 export async function getStaticPaths() {
-  if (BLOG?.disabled || BLOG?.post?.disabled) return [];
-  return (await fetchPosts()).map((post) => ({
+  return (await getAllPosts()).map((post) => ({
     params: {
-      blog: post.permalink,
+      blog: post.uid,
     },
     props: { post },
   }));
 }
 
 const { post } = Astro.props;
-const url = getCanonical(getPermalink(post.permalink, 'post'));
+const image: string | null = prismicH.asLink(post.data.post_hero_image);
 
 const meta = {
-  title: post.title,
-  description: post.description,
-  canonical: post.canonical || url,
-  image: await findImage(post.image),
-  noindex: BLOG?.post?.noindex,
+  title: prismicH.asText(post.data.post_title),
+  description: prismicH.asText(post.data.post_blurb),
+  canonical: post.uid,
+  image: image,
   ogType: 'article',
 };
 ---
 
 <Layout {meta}>
-  <SinglePost post={{ ...post, image: meta.image }} url={url} />
-  <ToBlogLink />
+  <SinglePost post={{ ...post, image: meta.image }} />
 </Layout>
