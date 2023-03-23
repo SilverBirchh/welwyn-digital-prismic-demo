@@ -7,7 +7,6 @@ import LatestPosts from '~/components/blog/LatestPosts.astro';
 import { getPage } from '~/prismic';
 
 const page = await getPage('homepage');
-console.log(page.data.homepage_title);
 
 const title = page.data.homepage_title[0].text;
 
