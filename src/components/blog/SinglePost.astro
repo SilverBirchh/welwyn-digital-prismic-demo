@@ -62,7 +62,7 @@ const { post } = Astro.props;
       set:html={prismicH.asHTML(post.data.post_content)}
     />
     <div class="mx-auto px-6 sm:px-6 max-w-3xl">
-      {post.data.body.map((slice) => <div set:html={slice.primary.embed_code[0].text} />)}
+      {post.data.body.map((slice) => <div set:html={slice.primary.embed_code[0]?.text} />)}
     </div>
     <div class="mx-auto px-6 sm:px-6 max-w-3xl mt-8 flex justify-between flex-col sm:flex-row">
       <PostTags tags={post.tags} class="mr-5" />
